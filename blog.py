@@ -1,6 +1,13 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import List, Optional
+from fastapi import APIRouter
+
+router = APIRouter()
+
+@router.get("/")
+def get_blogs():
+    return [{"id": 1, "title": "test"}]
 
 app = FastAPI()
 
