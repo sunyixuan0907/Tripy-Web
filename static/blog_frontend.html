@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
 <head>
-    <meta charset="UTF-8">
-    <title>博客管理</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-        }
-        h1, h2, h3 {
+  <meta charset="UTF-8">
+  <title>博客管理</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    /* 页面其他样式（如表单、博客列表等） */
+    body {
+      padding-top: 72px; /* 防止内容被固定顶栏遮挡 */
+    }
+    /* 其它局部样式定义，保持风格一致 */
+    h1, h2, h3 {
             color: #333;
         }
         form {
@@ -22,7 +24,8 @@
             width: 300px;
             padding: 5px;
         }
-        button {
+        /* 只影响内容区按钮，不影响顶栏 */
+        .main-content button {
             margin-top: 10px;
             padding: 8px 15px;
         }
@@ -34,9 +37,11 @@
         .blog-actions button {
             margin-right: 5px;
         }
-    </style>
+  </style>
 </head>
 <body>
+  <div id="headerContainer"></div>
+  <div class="main-content">
     <h1>博客管理</h1>
     <!-- 新增博客表单 -->
     <section>
@@ -63,7 +68,8 @@
         <h2>博客列表</h2>
         <div id="blogsContainer"></div>
     </section>
-    
+  </div>
+  
     <script>
         // 后端 API 地址
         const apiBase = "http://127.0.0.1:8000/blogs";
@@ -207,5 +213,20 @@
         // 初始加载博客列表
         loadBlogs();
     </script>
+    <script>
+    // 加载公共顶栏
+    fetch('header.html')
+      .then(response => response.text())
+      .then(html => {
+         document.getElementById('headerContainer').innerHTML = html;
+         // 加载后调用登录状态检测（如果定义了checkAuth函数）
+         checkAuth && checkAuth();
+      })
+      .catch(err => console.error('加载 header 失败：', err));
+  </script>
+  <!-- 保留博客管理的其它JS代码 -->
+  <script>
+    // 此处放加载博客、处理表单等逻辑
+  </script>
 </body>
 </html>

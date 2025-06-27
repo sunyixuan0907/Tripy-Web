@@ -3,53 +3,43 @@
 <head>
   <meta charset="UTF-8">
   <title>冲浪小游戏（合并版）</title>
+  <link rel="stylesheet" href="common.css">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 20px;
-    }
-    input[type="text"] {
-      padding: 5px;
-      width: 200px;
-    }
-    button {
-      margin: 5px;
-      padding: 10px 15px;
-    }
-    #output {
-      margin-top: 20px;
-      border: 1px solid #ccc;
-      padding: 10px;
-      text-align: left;
-      display: inline-block;
-      white-space: pre-wrap;
-      background: #f8f8f8;
-    }
-    canvas {
-      background: #b3e0ff;
-      display: block;
-      margin: 20px auto;
-      border-radius: 10px;
-    }
+    /* 保留或调整页面独有样式 */
+    /* body 样式已在 common.css 中统一定义，无需重复声明 */
   </style>
 </head>
 <body>
-  <h1>冲浪小游戏</h1>
-  <div>
-    <label>玩家名称:
-      <input type="text" id="playerName" placeholder="输入玩家名称">
-    </label>
+  <div id="headerContainer"></div>
+  <div class="main-content">
+    <h1>冲浪小游戏</h1>
+    <div>
+      <label>玩家名称:
+        <input type="text" id="playerName" placeholder="输入玩家名称">
+      </label>
+    </div>
+    <div>
+      <button onclick="startGame()">开始游戏</button>
+      <button onclick="moveForward()">前进一步</button>
+      <button onclick="checkStatus()">查看状态</button>
+      <button onclick="resetGame()">重置游戏</button>
+    </div>
+    <div id="output"></div>
+    <canvas id="gameCanvas" width="400" height="600"></canvas>
   </div>
-  <div>
-    <button onclick="startGame()">开始游戏</button>
-    <button onclick="moveForward()">前进一步</button>
-    <button onclick="checkStatus()">查看状态</button>
-    <button onclick="resetGame()">重置游戏</button>
-  </div>
-  <div id="output"></div>
-  <canvas id="gameCanvas" width="400" height="600"></canvas>
   
+  <script>
+    // 加载公共顶栏
+    fetch('header.html')
+      .then(response => response.text())
+      .then(html => {
+         document.getElementById('headerContainer').innerHTML = html;
+         checkAuth && checkAuth();
+      })
+      .catch(err => console.error('加载 header 失败：', err));
+  </script>
+  
+  <!-- 保留原有的冲浪小游戏JS逻辑 -->
   <script>
     // 后端 API 基础地址
     const baseUrl = "http://127.0.0.1:8000/surf";
@@ -162,4 +152,3 @@
   </script>
 </body>
 </html>
-```  
