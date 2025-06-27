@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="UTF-8">
+  <title>Tripy-Web 主页面</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; padding: 40px; }
+    h1 { margin-bottom: 40px; }
+    .entry-list { display: flex; justify-content: center; gap: 40px; }
+    .entry {
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 30px 40px;
+      background: #f8f8f8;
+      transition: box-shadow 0.2s;
+    }
+    .entry:hover { box-shadow: 0 0 10px #b3e0ff; }
+    .entry-title { font-size: 22px; margin-bottom: 10px; }
+    .entry-desc { color: #666; }
+  </style>
+</head>
+<body>
+  <h1>Tripy-Web 主页面</h1>
+  <div class="entry-list">
+    <div class="entry">
+      <div class="entry-title">博客管理</div>
+      <div class="entry-desc">增删查改博客，体验前后端交互</div>
+      <a href="blog_frontend.html"><button>进入博客管理</button></a>
+    </div>
+    <div class="entry">
+      <div class="entry-title">冲浪小游戏</div>
+      <div class="entry-desc">体验 Canvas 动画与后端同步</div>
+      <a href="surf_combined.html"><button>进入冲浪小游戏</button></a>
+    </div>
+    <!-- 后续可继续添加新入口 -->
+    <!--
+    <div class="entry">
+      <div class="entry-title">新功能</div>
+      <div class="entry-desc">描述</div>
+      <a href="your_new_page.html"><button>进入新功能</button></a>
+    </div>
+    -->
+  </div>
+</body>
+</html>
