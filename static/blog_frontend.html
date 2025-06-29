@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>博客管理</title>
-  <link rel="stylesheet" href="common.css">
+  <link rel="stylesheet" href="/static/common.css">
   <style>
     /* 页面其他样式（如表单、博客列表等） */
     body {
@@ -213,20 +213,6 @@
         // 初始加载博客列表
         loadBlogs();
     </script>
-    <script>
-    // 加载公共顶栏
-    fetch('header.html')
-      .then(response => response.text())
-      .then(html => {
-         document.getElementById('headerContainer').innerHTML = html;
-         // 加载后调用登录状态检测（如果定义了checkAuth函数）
-         checkAuth && checkAuth();
-      })
-      .catch(err => console.error('加载 header 失败：', err));
-  </script>
-  <!-- 保留博客管理的其它JS代码 -->
-  <script>
-    // 此处放加载博客、处理表单等逻辑
-  </script>
+    <script src="/static/common.js"></script>
 </body>
 </html>

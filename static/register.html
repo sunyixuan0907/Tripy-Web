@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>注册 - Tripy-Web</title>
-  <link rel="stylesheet" href="common.css">
+  <link rel="stylesheet" href="/static/common.css">
   <style>
     body { padding-top:72px; }
     form { max-width:320px; margin:100px auto; }
@@ -21,33 +21,6 @@
       <button type="submit">注册</button>
     </form>
   </div>
-  <script>
-    // 注入顶栏
-    fetch('header.html').then(r=>r.text())
-      .then(html=>document.getElementById('headerContainer').innerHTML=html);
-    // 提交注册
-    document.getElementById('registerForm').addEventListener('submit', async e => {
-      e.preventDefault();
-      const fd = new FormData(e.target);
-      const payload = { 
-        username: fd.get('username'), 
-        password: fd.get('password') 
-      };
-      const res = await fetch('http://127.0.0.1:8000/auth/register', {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify(payload)
-      });
-      if (res.ok) {
-        const { access_token } = await res.json();
-        localStorage.setItem('token', access_token);
-        // 注册完成后跳转到登录页
-        window.location.href = '/static/login.html';
-      } else {
-        const err = await res.json();
-        alert('注册失败：' + err.detail);
-      }
-    });
-  </script>
+  <script src="/static/common.js"></script>
 </body>
 </html>

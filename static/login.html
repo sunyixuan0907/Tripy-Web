@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>登录 - Tripy-Web</title>
-  <link rel="stylesheet" href="common.css">
+  <link rel="stylesheet" href="/static/common.css">
   <style>
     body { padding-top:72px; }
     form { max-width:320px; margin:100px auto; }
@@ -53,34 +53,6 @@
       </div>
     </div>
   </div>
-  <script>
-    // 注入统一顶栏
-    fetch('header.html').then(r=>r.text()).then(html=>{
-      document.getElementById('headerContainer').innerHTML=html;
-      checkAuth&&checkAuth();
-    });
-  </script>
-  <script>
-    document.getElementById('loginForm').addEventListener('submit', async e=>{
-      e.preventDefault();
-      const fd=new FormData(e.target);
-      const params=new URLSearchParams();
-      params.append('username', fd.get('username'));
-      params.append('password', fd.get('password'));
-      const res = await fetch('http://127.0.0.1:8000/auth/login', {
-        method: 'POST',
-        headers: {'Content-Type':'application/x-www-form-urlencoded'},
-        body: params
-      });
-      if(res.ok){
-        const { access_token } = await res.json();
-        localStorage.setItem('token', access_token);
-        window.location.href = '/index.html';
-      } else {
-        const err = await res.json();
-        alert('登录失败：' + err.detail);
-      }
-    });
-  </script>
+  <script src="/static/common.js"></script>
 </body>
 </html>

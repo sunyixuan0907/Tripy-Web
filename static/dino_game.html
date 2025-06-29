@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="UTF-8">
+  <title>小恐龙跳跃游戏</title>
+  <link rel="stylesheet" href="/static/common.css">
+  <style>
+    body { margin:0; font-family:Arial, sans-serif; text-align:center; }
+    #gameContainer { position:relative; padding-top:72px; }
+    #canvas { background:#f7f7f7; display:block; margin:20px auto; border:1px solid #ccc; }
+    #score { position:absolute; top:80px; right:40px; font-size:18px; color:#333; }
+    #gameOver {
+      position:absolute; top:30%; left:50%; transform:translateX(-50%);
+      font-size:24px; color:#333; display:none;
+    }
+    #gameOver button {
+      margin-top:12px; padding:8px 16px; font-size:16px;
+    }
+  </style>
+</head>
+<body>
+  <div id="headerContainer"></div>
+  <div id="gameContainer">
+    <canvas id="canvas" width="800" height="200"></canvas>
+    <div id="score">得分: 0</div>
+    <div id="gameOver">
+      <div>游戏结束</div>
+      <button onclick="resetGame()">重新开始</button>
+    </div>
+  </div>
+  <script src="/static/common.js"></script>
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const scoreEl = document.getElementById('score');
+    const overEl = document.getElementById('gameOver');
+
+    let dino = { x:50, y:150, w:40, h:40, vy:0, gravity:0.6, jumpForce:12, grounded:false };
+    let obstacles = [];
+    let frame = 0, score = 0, speed = 6, spawnTimer = 0, gameActive = true;
+
+    function resetGame(){
+      obstacles = [];
+      dino.y=150; dino.vy=0; dino.grounded=false;
+      frame=0; score=0; speed=6; spawnTimer=0; gameActive=true;
+      overEl.style.display='none';
+      requestAnimationFrame(update);
+    }
+
+    function spawnObstacle(){
+      const h = 20 + Math.random()*30;
+      obstacles.push({ x:canvas.width, y:180-h, w:20, h, passed:false });
+    }
+
+    function update(){
+      if(!gameActive) return;
+      frame++; ctx.clearRect(0,0,canvas.width,canvas.height);
+
+      // 地面
+      ctx.fillStyle='#888';
+      ctx.fillRect(0,190,canvas.width,10);
+
+      // dino 物理
+      dino.vy += dino.gravity;
+      dino.y += dino.vy;
+      if(dino.y >= 150){ dino.y=150; dino.vy=0; dino.grounded=true; }
+      // 画恐龙
+      ctx.fillStyle='#333';
+      ctx.fillRect(dino.x, dino.y, dino.w, dino.h);
+
+      // 障碍物
+      spawnTimer--;
+      if(spawnTimer<=0){
+        spawnObstacle();
+        spawnTimer = 80 + Math.random()*80;
+      }
+      obstacles.forEach(o=>{
+        o.x -= speed;
+        ctx.fillStyle='#555';
+        ctx.fillRect(o.x, o.y, o.w, o.h);
+        // 碰撞检测
+        if(
+          dino.x < o.x+o.w &&
+          dino.x+dino.w > o.x &&
+          dino.y < o.y+o.h &&
+          dino.y+dino.h > o.y
+        ){
+          gameActive=false; overEl.style.display='block';
+        }
+        // 计分
+        if(!o.passed && o.x + o.w < dino.x){
+          o.passed = true; score+=1; speed += 0.2;
+        }
+      });
+      // 更新分数
+      scoreEl.innerText = '得分: ' + score;
+
+      if(gameActive) requestAnimationFrame(update);
+    }
+
+    // 处理跳跃
+    document.addEventListener('keydown', e=>{
+      if((e.key===' ' || e.key==='ArrowUp' || e.key==='w') && dino.grounded){
+        dino.vy = -dino.jumpForce;
+        dino.grounded = false;
+      }
+    });
+
+    // 改为 /dino
+    const baseUrl = "http://127.0.0.1:8000/dino";
+
+    // 开始游戏
+    resetGame();
+  </script>
+</body>
+</html>
