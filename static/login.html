@@ -38,11 +38,13 @@
   <div id="headerContainer"></div>
   <div class="main-content">
     <h1>登录</h1>
+    <!-- B. 登录表单，必须有 id="loginForm" -->
     <form id="loginForm">
       <label>用户名:<input name="username" required></label>
       <label>密码:<input type="password" name="password" required></label>
       <button type="submit">登录</button>
     </form>
+
     <!-- 注册入口 -->
     <div class="entry-list">
       <div class="entry">
@@ -54,5 +56,31 @@
     </div>
   </div>
   <script src="/static/common.js"></script>
+  <script>
+    // 登录表单提交处理：调用 /auth/login，保存 access_token
+    document.getElementById("loginForm").onsubmit = async function(e) {
+      e.preventDefault();
+      const form = e.target;
+      const username = form.username.value;
+      const password = form.password.value;
+      const params = new URLSearchParams();
+      params.append("grant_type", "password");    // ← 加上这一行
+      params.append("username", username);
+      params.append("password", password);
+      const res = await fetch("http://127.0.0.1:8000/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: params
+      });
+      const data = await res.json();
+      if (res.ok) {
+        // 保存 token 并跳转到博客管理页
+        localStorage.setItem("access_token", data.access_token);
+        window.location.href = "/static/blog_frontend.html";
+      } else {
+        alert("登录失败: " + (data.detail || res.statusText));
+      }
+    };
+  </script>
 </body>
 </html>

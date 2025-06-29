@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin 用户管理</title>
+  <link rel="stylesheet" href="/static/common.css">
+  <style>
+    body { padding-top:72px; }
+    table { width:100%; border-collapse:collapse; margin:20px auto; max-width:600px; }
+    th, td { border:1px solid #ccc; padding:8px 12px; text-align:left; }
+    th { background:#f0f0f0; }
+    #adminLoginForm { max-width:300px; margin:60px auto; }
+  </style>
+</head>
+<body>
+  <div id="headerContainer"></div>
+  <div class="main-content">
+    <h1>用户管理</h1>
+    <form id="adminLoginForm">
+      <label>用户名：<input name="username" required></label>
+      <label>密码：<input name="password" type="password" required></label>
+      <button type="submit">管理员登录</button>
+    </form>
+    <table id="userTable" style="display:none;">
+      <thead>
+        <tr><th>ID</th><th>用户名</th><th>激活</th></tr>
+      </thead>
+      <tbody id="usersBody"></tbody>
+    </table>
+  </div>
+  <script src="/static/common.js"></script>
+  <script>
+    // 管理员登录
+    document.getElementById("adminLoginForm").onsubmit = async function(e) {
+      e.preventDefault();
+      const form = e.target;
+      const username = form.username.value;
+      const password = form.password.value;
+      const res = await fetch("/admin/login", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({username, password})
+      });
+      if(res.ok) {
+        localStorage.setItem("admin_token", "admin-token");
+        form.style.display = "none";
+        document.getElementById("userTable").style.display = "";
+        loadUsers();
+      } else {
+        alert("管理员账号或密码错误");
+      }
+    };
+
+    // 加载用户数据
+    async function loadUsers() {
+      const token = localStorage.getItem("admin_token");
+      if(token !== "admin-token") {
+        document.getElementById("adminLoginForm").style.display = "";
+        document.getElementById("userTable").style.display = "none";
+        return;
+      }
+      const res = await fetch("/admin/users", {
+        headers: { "X-Admin-Token": token }
+      });
+      if(!res.ok) {
+        alert("无权限或加载失败");
+        localStorage.removeItem("admin_token");
+        document.getElementById("adminLoginForm").style.display = "";
+        document.getElementById("userTable").style.display = "none";
+        return;
+      }
+      const users = await res.json();
+      const tbody = document.getElementById("usersBody");
+      tbody.innerHTML = "";
+      users.forEach(u => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${u.id}</td><td>${u.username}</td><td>${u.is_active}</td>`;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // 自动尝试加载
+    if(localStorage.getItem("admin_token") === "admin-token") {
+      document.getElementById("adminLoginForm").style.display = "none";
+      document.getElementById("userTable").style.display = "";
+      loadUsers();
+    }
+  </script>
+</body>
+</html>
