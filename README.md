@@ -3,30 +3,50 @@
 ## PT0 简介
 
 Tripy-Web 是一个基于 FastAPI 的简单博客与小游戏演示项目，适合课程实验和前后端分离开发入门。
-
-## PT1 服务支持
-
-### 环境要求
+### 开发环境
 
 - Python 3.13.5
-- FastAPI 0.115.13
-- Uvicorn 0.34.3
+- Node.js >= 18.x（当前 v22.17.0）
+- npm >= 9.x（当前 v10.9.2）
+- 推荐使用 PowerShell 或 Bash 等支持脚本执行的终端
+
+
+## PT1 启动
+### git库克隆
+```bash
+git clone https://github.com/shxYue/Tripy-Web.git
+```
+#如果弹出输入用户名和密码的提示，请输入你的 GitHub 用户名和密码（或使用个人访问令牌）。
+```bash
+git config --global user.name "Your Name"
+git config --global user.email "your_email@example.com"
+```
 
 ### 安装依赖
 
-在终端执行：
+在项目根目录下执行：
+
+```powershell
+# 创建并激活虚拟环境
+python -m venv venv
+# Windows PowerShell 下激活
+.\venv\Scripts\activate
+# Linux/macOS 下激活
+source venv/bin/activate
+
+# 使用 requirements.txt 安装所有依赖
+pip install -r requirements.txt
+```
+
+如果想单独安装，也可执行：
 
 ```bash
-pip install "fastapi[standard]"
-pip install uvicorn
-pip install python-jose
-pip install sqlalchemy
-pip install passlib[bcrypt]
 pip install "fastapi[standard]" uvicorn python-jose sqlalchemy "passlib[bcrypt]"
-
 ```
-###启动服务
-打开终端，切换到项目根目录（如 d:\pycode\Tripy-Web）：
+#此时安装到全局
+
+### 启动服务
+打开终端，切换到项目根目录
 cd d:\pycode\Tripy-Web
 启动 FastAPI 服务：
 uvicorn main:app --reload
@@ -40,6 +60,6 @@ http://127.0.0.1:8000/static/index.html
 PT2 测试
 主页访问：http://127.0.0.1:8000/static/index.html
 博客管理：http://127.0.0.1:8000/static/blog_frontend.html
-冲浪小游戏：http://127.0.0.1:8000/static/surf_combined.html
+恐龙游戏：http://127.0.0.1:8000/static/dino.html
 登录/注册：http://127.0.0.1:8000/static/login.html
 如有问题请在 issues 区反馈。
