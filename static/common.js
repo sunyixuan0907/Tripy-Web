@@ -13,6 +13,16 @@
     });
 })();
 
+// 动态引入 GSAP 动画库
+(function() {
+  if (!window.gsap) {
+    const script = document.createElement('script');
+    script.src = "https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js";
+    script.onload = () => { window.gsapLoaded = true; };
+    document.head.appendChild(script);
+  }
+})();
+
 // 添加带认证的请求函数
 function authFetch(url, options = {}) {
   const token = localStorage.getItem("access_token");
