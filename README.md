@@ -20,8 +20,10 @@ Tripy-Web 是一个基于 FastAPI 的简单博客与小游戏演示项目，适�
 pip install "fastapi[standard]"
 pip install uvicorn
 pip install python-jose
+pip install sqlalchemy
+pip install passlib[bcrypt]
 # 如需数据库支持再安装
-# pip install sqlalchemy
+
 ```
 ###启动服务
 打开终端，切换到项目根目录（如 d:\pycode\Tripy-Web）：
