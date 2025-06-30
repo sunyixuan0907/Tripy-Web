@@ -22,7 +22,7 @@ pip install uvicorn
 pip install python-jose
 pip install sqlalchemy
 pip install passlib[bcrypt]
-# 如需数据库支持再安装
+pip install "fastapi[standard]" uvicorn python-jose sqlalchemy "passlib[bcrypt]"
 
 ```
 ###启动服务
