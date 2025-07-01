@@ -62,10 +62,10 @@ http://127.0.0.1:8000/docs
 
 访问前端页面（静态文件）：
 
-http://127.0.0.1:8000/static/index.html
+http://127.0.0.1:8000/static/pages/index.html
 PT2 测试
-主页访问：http://127.0.0.1:8000/static/index.html
-博客管理：http://127.0.0.1:8000/static/blog_frontend.html
-恐龙游戏：http://127.0.0.1:8000/static/dino.html
-登录/注册：http://127.0.0.1:8000/static/login.html
+主页访问：http://127.0.0.1:8000/static/pages/index.html
+博客管理：http://127.0.0.1:8000/static/pages/blog_frontend.html
+恐龙游戏：http://127.0.0.1:8000/static/pages/dino_game.html
+登录/注册：http://127.0.0.1:8000/static/pages/login.html
 如有问题请在 issues 区反馈。

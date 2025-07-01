@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>登录 - Tripy-Web</title>
-  <link rel="stylesheet" href="/static/common.css">
+  <link rel="stylesheet" href="/static/css/common.css">
   <style>
     body { padding-top:72px; }
     form { max-width:320px; margin:100px auto; }
@@ -48,14 +48,14 @@
     <!-- 注册入口 -->
     <div class="entry-list">
       <div class="entry">
-        <a href="/static/register.html">
+        <a href="/static/pages/register.html">
           <div class="entry-title">注册</div>
           <div class="entry-desc">创建新账号</div>
         </a>
       </div>
     </div>
   </div>
-  <script src="/static/common.js"></script>
+  <script src="/static/js/common.js"></script>
   <script>
     // 登录表单提交处理：调用 /auth/login，保存 access_token
     document.getElementById("loginForm").onsubmit = async function(e) {
@@ -76,7 +76,7 @@
       if (res.ok) {
         // 保存 token 并跳转到博客管理页
         localStorage.setItem("access_token", data.access_token);
-        window.location.href = "/static/blog_frontend.html";
+        window.location.href = "/static/pages/blog_frontend.html";
       } else {
         alert("登录失败: " + (data.detail || res.statusText));
       }

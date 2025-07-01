@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>博客管理</title>
-  <link rel="stylesheet" href="/static/common.css">
+  <link rel="stylesheet" href="/static/css/common.css">
   <style>
     /* 页面其他样式（如表单、博客列表等） */
     body {
@@ -69,7 +69,7 @@
         <div id="blogsContainer"></div>
     </section>
   </div>
-  
+    <script src="/static/js/common.js"></script>
     <script>
         // 后端 API 地址
         const apiBase = "http://127.0.0.1:8000/blogs";
@@ -210,6 +210,5 @@
         // 初始加载博客列表
         loadBlogs();
     </script>
-    <script src="/static/common.js"></script>
 </body>
 </html>

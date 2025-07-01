@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
 <head>
-  <meta charset="UTF-8">
-  <title>Admin 用户管理</title>
-  <link rel="stylesheet" href="/static/common.css">
-  <style>
-    body { padding-top:72px; }
-    table { width:100%; border-collapse:collapse; margin:20px auto; max-width:600px; }
-    th, td { border:1px solid #ccc; padding:8px 12px; text-align:left; }
-    th { background:#f0f0f0; }
-    #adminLoginForm { max-width:300px; margin:60px auto; }
-  </style>
+    <meta charset="UTF-8">
+    <title>Admin 用户管理</title>
+    <link rel="stylesheet" href="/static/css/common.css">
+    <style>
+      body { padding-top:72px; }
+      table { width:100%; border-collapse:collapse; margin:20px auto; max-width:600px; }
+      th, td { border:1px solid #ccc; padding:8px 12px; text-align:left; }
+      th { background:#f0f0f0; }
+      #adminLoginForm { max-width:300px; margin:60px auto; }
+    </style>
 </head>
 <body>
   <div id="headerContainer"></div>
@@ -28,7 +28,7 @@
       <tbody id="usersBody"></tbody>
     </table>
   </div>
-  <script src="/static/common.js"></script>
+  <script src="/static/js/common.js"></script>
   <script>
     // 管理员登录
     document.getElementById("adminLoginForm").onsubmit = async function(e) {

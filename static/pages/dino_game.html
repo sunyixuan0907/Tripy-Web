@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>小恐龙跳跃游戏</title>
-  <link rel="stylesheet" href="/static/common.css">
+  <!-- 样式改为新的 css 目录 -->
+  <link rel="stylesheet" href="/static/css/common.css">
   <style>
     /* 整体拉满全屏 */
     html, body { margin:0; padding:0; width:100%; height:100%; }
@@ -47,8 +48,14 @@
       <button onclick="resetGame()">重新开始</button>
     </div>
   </div>
-  <script src="/static/common.js"></script>
+  <!-- 通用脚本改为新的 js 目录 -->
+  <script src="/static/js/common.js"></script>
   <script>
+    // 图片资源改为新的 img 目录
+    const dinoImg = new Image();    dinoImg.src    = '/static/img/dino.png';
+    const cactusImg = new Image();  cactusImg.src = '/static/img/cactus.png';
+    
+    // 以下游戏逻辑保持不变
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
     const scoreEl = document.getElementById('score');
@@ -71,8 +78,6 @@
       grounded: false,
       baseY: 0
     };
-    const dinoImg = new Image(); dinoImg.src = '/static/dino.png';
-    const cactusImg = new Image(); cactusImg.src = '/static/cactus.png';
     let obstacles = [], frame=0, score=0, speed=6*SCALE, spawnTimer=0, gameActive=true;
 
     function resizeCanvas(){
