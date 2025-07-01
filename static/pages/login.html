@@ -57,14 +57,21 @@
   </div>
   <script src="/static/js/common.js"></script>
   <script>
-    // 登录表单提交处理：调用 /auth/login，保存 access_token
+    // 登录表单提交处理：优先检测代码内 admin 账号
     document.getElementById("loginForm").onsubmit = async function(e) {
       e.preventDefault();
       const form = e.target;
       const username = form.username.value;
       const password = form.password.value;
+     // ← 硬编码管理员凭据
+     const ADMIN_USER = "admin", ADMIN_PWD = "admin123";
+     if (username === ADMIN_USER && password === ADMIN_PWD) {
+       localStorage.setItem("admin_token", "admin-token");
+       localStorage.removeItem("access_token");
+       return window.location.href = "/static/pages/admin.html";
+     }
       const params = new URLSearchParams();
-      params.append("grant_type", "password");    // ← 加上这一行
+      params.append("grant_type", "password");
       params.append("username", username);
       params.append("password", password);
       const res = await fetch("http://127.0.0.1:8000/auth/login", {
@@ -74,9 +81,12 @@
       });
       const data = await res.json();
       if (res.ok) {
-        // 保存 token 并跳转到博客管理页
+        // 保存 token 并根据角色跳转
         localStorage.setItem("access_token", data.access_token);
-        window.location.href = "/static/pages/blog_frontend.html";
+        const payload = parseJwt(data.access_token);
+        window.location.href = payload.role === "admin"
+          ? "/static/pages/admin.html"
+          : "/static/pages/blog_frontend.html";
       } else {
         alert("登录失败: " + (data.detail || res.statusText));
       }

@@ -7,7 +7,7 @@
   <style>
     body { padding-top:72px; }
     form { max-width:320px; margin:100px auto; }
-    label, input { display:block; width:100%; margin-bottom:12px; }
+    label, input, select { display:block; width:100%; margin-bottom:12px; }
     .main-content button { width:100%; padding:8px; }
   </style>
 </head>
@@ -38,9 +38,8 @@
         const data = await res.json();
         if (res.ok) {
           if (confirm("注册成功，是否直接登录？")) {
-            // 存储 token 并跳转到首页
             localStorage.setItem("access_token", data.access_token);
-            window.location.href = "/static/index.html";
+            window.location.href = "/static/pages/index.html";
           } else {
             alert("请前往登录页面登录");
           }
