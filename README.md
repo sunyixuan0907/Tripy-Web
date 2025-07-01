@@ -33,6 +33,8 @@ git config --global user.email "your_email@example.com"
 # 激活新虚拟环境
 .\venv\Scripts\activate
 # !!一定要确认是开发版本（3.13.5）（python --version）
+py -3.13 -m venv venv
+#or
 python -m venv venv
 # Windows PowerShell 下激活
 .\venv\Scripts\activate

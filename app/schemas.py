@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import List
 
 class UserCreate(BaseModel):
     username: str
@@ -21,3 +22,11 @@ class BlogSchema(BaseModel):
     title: str
     content: str
     author: str = ""
+
+# 添加分数提交和排行榜输出模型
+class ScoreSubmit(BaseModel):
+    score: int
+
+class LeaderboardEntry(BaseModel):
+    username: str
+    score: int

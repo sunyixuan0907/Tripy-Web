@@ -36,6 +36,21 @@
       text-align: center;
     }
     #gameOver button { margin-top: 16px; padding: 12px 24px; }
+
+    /* 排行榜样式 */
+    #leaderboard {
+      margin: 20px auto;
+      text-align: center;
+      color: #333;
+    }
+    #leaderboard h3 {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+    #leaderboard div {
+      font-size: 16px;
+      margin: 4px 0;
+    }
   </style>
 </head>
 <body>
@@ -47,7 +62,8 @@
       <div>游戏结束</div>
       <button onclick="resetGame()">重新开始</button>
     </div>
-  </div>
+  </div>  <!-- gameContainer 结束 -->
+  <div id="leaderboard" style="margin:20px auto; text-align:center;"></div>
   <!-- 通用脚本改为新的 js 目录 -->
   <script src="/static/js/common.js"></script>
   <script>
@@ -145,7 +161,7 @@
         // collision
         if (dino.x < o.x+o.w && dino.x+dino.w > o.x &&
             dino.y < o.y+o.h && dino.y+dino.h > o.y) {
-          gameActive=false; overEl.style.display='block';
+          gameActive=false; overEl.style.display='block'; postScoreAndShow();
         }
         if (!o.passed && o.x+o.w < dino.x) {
           o.passed=true; score++; speed+=0.2*SCALE;
@@ -175,6 +191,28 @@
 
     // 启动
     resetGame();
+  
+    // 提交分数并渲染排行榜
+    async function postScoreAndShow() {
+      try {
+        await authFetch('/dino/score', {
+          method: 'POST',
+          body: JSON.stringify({ score }),
+        });
+        await showLeaderboard();
+      } catch (e) { console.error(e); }
+    }
+
+    async function showLeaderboard(limit = 10) {
+      try {
+        const res = await authFetch(`/dino/leaderboard?limit=${limit}`);
+        const list = await res.json();
+        const lb = document.getElementById('leaderboard');
+        lb.innerHTML = '<h3>排行榜</h3>' + list.map(e => `<div>${e.username}: ${e.score}</div>`).join('');
+      } catch (e) { console.error(e); }
+    }
+    // 页面加载时渲染排行榜
+    showLeaderboard();
   </script>
 </body>
 </html>
