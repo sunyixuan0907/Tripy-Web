@@ -1,7 +1,7 @@
 import os
 
 # 1. 启动前先删除数据库文件
-db_path = os.path.join(os.path.dirname(__file__), "data.db")
+db_path = os.path.join(os.path.dirname(__file__), "app", "data.db")
 if os.path.exists(db_path):
     os.remove(db_path)
 

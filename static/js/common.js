@@ -38,7 +38,7 @@ function authFetch(url, options = {}) {
   }).then(res => {
     if (res.status === 401) {
       alert("请先登录！");
-      window.location.href = "/static/login.html";
+      window.location.href = "/static/pages/login.html";
       throw new Error("认证失败");
     }
     return res;
@@ -55,7 +55,7 @@ function updateAuthState() {
       authBtn.href = "javascript:logout()";
     } else {
       authBtn.textContent = "登录";
-      authBtn.href = "/static/login.html";
+      authBtn.href = "/static/pages/login.html";
     }
   }
 }
@@ -65,5 +65,5 @@ function logout() {
   localStorage.removeItem("access_token");
   alert("已退出登录");
   updateAuthState();
-  window.location.href = "/static/index.html";
+  window.location.href = "/static/pages/index.html";
 }
