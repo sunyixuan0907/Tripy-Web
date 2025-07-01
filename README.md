@@ -28,6 +28,11 @@ git config --global user.email "your_email@example.com"
 
 ```powershell
 # 创建并激活虚拟环境
+# 临时放开执行策略
+# Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass（如遇到授权失败）
+# 激活新虚拟环境
+.\venv\Scripts\activate
+# !!一定要确认是开发版本（3.13.5）（python --version）
 python -m venv venv
 # Windows PowerShell 下激活
 .\venv\Scripts\activate
@@ -36,6 +41,8 @@ source venv/bin/activate
 
 # 使用 requirements.txt 安装所有依赖
 pip install -r requirements.txt
+#（若网络受限，可加镜像）
+pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
 
 如果想单独安装，也可执行：
@@ -43,7 +50,6 @@ pip install -r requirements.txt
 ```bash
 pip install "fastapi[standard]" uvicorn python-jose sqlalchemy "passlib[bcrypt]"
 ```
-#此时安装到全局
 
 ### 启动服务
 打开终端，切换到项目根目录
