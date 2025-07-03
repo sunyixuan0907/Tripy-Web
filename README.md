@@ -56,8 +56,19 @@ pip install "fastapi[standard]" uvicorn python-jose sqlalchemy "passlib[bcrypt]"
 ### 启动服务
 打开终端，切换到项目根目录
 cd d:\pycode\Tripy-Web
-启动 FastAPI 服务：
-uvicorn main:app --reload
+
+# 推荐方式：使用脚本启动，会自动读取 `.env` 端口
+```powershell
+venv\Scripts\activate
+python main.py
+```
+
+# 如果仍想使用 uvicorn CLI（需手动指定端口）
+```powershell
+venv\Scripts\activate
+uvicorn main:app --reload --port $Env:TUNNEL_PORT
+```
+
 访问接口文档：
 
 http://127.0.0.1:8000/docs
