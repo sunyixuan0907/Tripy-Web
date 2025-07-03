@@ -9,65 +9,158 @@
     body {
       padding-top: 72px; /* 防止内容被固定顶栏遮挡 */
     }
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      min-height: 100vh;
+      height: 100vh;
+      box-sizing: border-box;
+      padding-top: 72px;
+      overflow-x: hidden;
+    }
+    .container-flex {
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;
+      width: 100vw;
+      height: calc(100vh - 72px);
+      min-height: 600px;
+      margin: 0;
+      gap: 0;
+    }
+    .sidebar {
+      flex: 0 0 22vw;
+      max-width: 350px;
+      min-width: 220px;
+      background: #f8f8f8;
+      border-right: 1px solid #e0e0e0;
+      padding: 32px 18px 32px 18px;
+      box-sizing: border-box;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      font-size: 1.25rem;
+    }
+    .sidebar .footer-section h3 {
+      font-size: 1.35em;
+      margin-bottom: 12px;
+    }
+    .sidebar .footer-section ul {
+      margin-bottom: 24px;
+    }
+    .sidebar .footer-section li {
+      margin-bottom: 12px;
+    }
+    .blog-list-bar {
+      flex: 1 1 38vw;
+      min-width: 320px;
+      max-width: 700px;
+      background: #f8f8f8;
+      border-left: 1px solid #e0e0e0;
+      padding: 32px 18px 32px 18px;
+      box-sizing: border-box;
+      height: 100%;
+      overflow-y: auto;
+    }
+    .main-content {
+      flex: 0 0 28vw;
+      min-width: 260px;
+      max-width: 480px;
+      padding: 32px 20px;
+      box-sizing: border-box;
+      height: 100%;
+      overflow-y: auto;
+    }
     /* 其它局部样式定义，保持风格一致 */
     h1, h2, h3 {
-            color: #333;
-        }
-        form {
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            margin-top: 10px;
-        }
-        input, textarea {
-            width: 300px;
-            padding: 5px;
-        }
-        /* 只影响内容区按钮，不影响顶栏 */
-        .main-content button {
-            margin-top: 10px;
-            padding: 8px 15px;
-        }
-        .blog-item {
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin-bottom: 10px;
-        }
-        .blog-actions button {
-            margin-right: 5px;
-        }
+      color: #333;
+    }
+    form {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+    input, textarea {
+      width: 300px;
+      padding: 5px;
+    }
+    /* 只影响内容区按钮，不影响顶栏 */
+    .main-content button {
+      margin-top: 10px;
+      padding: 8px 15px;
+    }
+    .blog-item {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 10px;
+      background: #fff;
+    }
+    .blog-actions button {
+      margin-right: 5px;
+    }
   </style>
 </head>
 <body>
   <div id="headerContainer"></div>
-  <div class="main-content">
-    <h1>博客管理</h1>
-    <!-- 新增博客表单 -->
-    <section>
-        <h2>新增博客</h2>
-        <form id="createBlogForm">
-            <label>ID:
-                <input type="number" name="id" required>
-            </label>
-            <label>标题:
-                <input type="text" name="title" required>
-            </label>
-            <label>内容:
-                <textarea name="content" rows="4" required></textarea>
-            </label>
-            <label>作者:
-                <input type="text" name="author">
-            </label>
-            <button type="submit">新增博客</button>
-        </form>
-    </section>
-    
-    <!-- 博客列表 -->
-    <section>
-        <h2>博客列表</h2>
-        <div id="blogsContainer"></div>
-    </section>
+  <div class="container-flex">
+    <aside class="sidebar">
+      <div class="footer-section">
+        <h3>快速访问</h3>
+        <ul>
+          <li><a href="/static/pages/login.html">登录</a></li>
+          <li><a href="/static/pages/blog_frontend.html">博客</a></li>
+          <li><a href="/static/pages/dino_game.html">小游戏</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>服务支持</h3>
+        <ul>
+          <li><a href="mailto:Lifuyve@outlook.com">联系客服邮箱</a></li>
+          <li><a href="https://github.com/shxYue/Tripy-Web/issues" target="_blank">问题反馈</a></li>
+          <li><a href="/static/pages/help.html">帮助中心</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>关于我们</h3>
+        <ul>
+          <li><a href="/static/pages/about.html">项目介绍</a></li>
+          <li><a href="https://github.com/shxYue/Tripy-Web" target="_blank">GitHub 仓库</a></li>
+          <li><a href="/static/pages/contact.html">联系我们</a></li>
+        </ul>
+      </div>
+    </aside>
+    <div class="blog-list-bar">
+      <h2>博客列表</h2>
+      <div id="blogsContainer"></div>
+    </div>
+    <div class="main-content">
+      <h1>博客管理</h1>
+      <!-- 新增博客表单 -->
+      <section>
+          <h2>新增博客</h2>
+          <form id="createBlogForm">
+              <label>ID:
+                  <input type="number" name="id" required>
+              </label>
+              <label>标题:
+                  <input type="text" name="title" required>
+              </label>
+              <label>内容:
+                  <textarea name="content" rows="4" required></textarea>
+              </label>
+              <label>作者:
+                  <input type="text" name="author">
+              </label>
+              <button type="submit">新增博客</button>
+          </form>
+      </section>
+    </div>
   </div>
     <script src="/static/js/common.js"></script>
     <script>
