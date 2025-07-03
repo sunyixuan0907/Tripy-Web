@@ -82,3 +82,20 @@ PT2 测试
 恐龙游戏：http://127.0.0.1:8000/static/pages/dino_game.html
 登录/注册：http://127.0.0.1:8000/static/pages/login.html
 如有问题请在 issues 区反馈。
+
+Tripy-Web/
+├── main.py                 # FastAPI 主入口
+├── requirements.txt        # 依赖包列表
+├── README.md               # 项目说明文档
+├── test1.py                # 测试脚本
+├── 应用程序/                # 后端业务代码（如 models、db、api 等）
+├── 静态的/                  # 前端静态资源（HTML/CSS/JS/图片等）
+│   ├── pages/              # 前端页面目录
+│   │   ├── index.html          # 主页
+│   │   ├── blog_frontend.html  # 博客管理页面
+│   │   ├── dino_game.html      # 恐龙游戏页面
+│   │   └── login.html          # 登录/注册页面
+│   └── ...                 # 其他静态资源
+├── .env                    # 环境变量配置文件
+├── .gitignore              # Git 忽略文件
+└── venv/                   # Python 虚拟环境目录
