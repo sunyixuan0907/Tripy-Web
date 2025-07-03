@@ -1,5 +1,6 @@
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
+from datetime import datetime
 
 class UserCreate(BaseModel):
     username: str
@@ -13,15 +14,45 @@ class UserOut(BaseModel):
     id: int
     username: str
     is_active: bool
+    nickname: Optional[str] = None
 
     class Config:
         from_attributes = True
+
+# 新增：用户更新模型
+class UserUpdate(BaseModel):
+    nickname: str
+
+class BlogCreate(BaseModel):
+    title: str
+    content: str
+    is_public: bool = True  # True=公开，False=私密
 
 class BlogSchema(BaseModel):
     id: int
     title: str
     content: str
-    author: str = ""
+    author: str
+    created_at: datetime
+    is_public: bool
+    likes: int = 0
+    comments: List["CommentSchema"] = []
+
+    class Config:
+        orm_mode = True
+
+class CommentCreate(BaseModel):
+    content: str
+    # 评论无需指定作者，直接用当前用户
+
+class CommentSchema(BaseModel):
+    id: int
+    author: str
+    content: str
+    created_at: datetime
+
+    class Config:
+        orm_mode = True
 
 # 添加分数提交和排行榜输出模型
 class ScoreSubmit(BaseModel):

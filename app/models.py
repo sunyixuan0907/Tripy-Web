@@ -7,6 +7,7 @@ class User(Base):
     username = Column(String(50), unique=True, index=True, nullable=False)
     hashed_password = Column(String(128), nullable=False)
     is_active = Column(Boolean, default=True)
+    nickname = Column(String(50), default="", nullable=True)  # 添加可编辑的昵称字段
 
 # 添加小恐龙游戏分数表，记录每个用户的最高分
 class DinoScore(Base):

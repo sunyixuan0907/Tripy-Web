@@ -145,17 +145,14 @@
       <section>
           <h2>新增博客</h2>
           <form id="createBlogForm">
-              <label>ID:
-                  <input type="number" name="id" required>
-              </label>
               <label>标题:
                   <input type="text" name="title" required>
               </label>
               <label>内容:
                   <textarea name="content" rows="4" required></textarea>
               </label>
-              <label>作者:
-                  <input type="text" name="author">
+              <label>公开发布:
+                  <input type="checkbox" name="is_public" checked>
               </label>
               <button type="submit">新增博客</button>
           </form>
@@ -170,7 +167,7 @@
         // 获取所有博客并展示
         async function loadBlogs() {
             try {
-                const response = await authFetch("/blogs/");
+                const response = await authFetch(apiBase + "/");
                 const blogs = await response.json();
                 const container = document.getElementById("blogsContainer");
                 container.innerHTML = "";
@@ -179,12 +176,22 @@
                     div.className = "blog-item";
                     div.innerHTML = `
                         <strong>ID:</strong> ${blog.id}<br>
+                        <strong>发布时间:</strong> ${new Date(blog.created_at).toLocaleString()}<br>
                         <strong>标题:</strong> ${blog.title}<br>
                         <strong>内容:</strong> ${blog.content}<br>
                         <strong>作者:</strong> ${blog.author || ""}<br>
+                        <strong>👍 喜欢:</strong> <span id="like-count-${blog.id}">${blog.likes}</span> <button onclick="likeBlog(${blog.id})">点赞</button><br>
                         <div class="blog-actions">
                             <button onclick="deleteBlog(${blog.id})">删除</button>
                             <button onclick="showUpdateForm(${blog.id})">编辑</button>
+                        </div>
+                        <div id="comments-${blog.id}" style="margin-top:10px;">
+                            <strong>评论：</strong><br>
+                            <!-- 评论列表 -->
+                        </div>
+                        <div style="margin-top:5px;">
+                            <input type="text" id="comment-input-${blog.id}" placeholder="写下你的评论...">
+                            <button onclick="submitComment(${blog.id})">提交评论</button>
                         </div>
                         <div id="updateForm-${blog.id}" style="display:none; margin-top:10px;">
                             <h3>编辑博客</h3>
@@ -195,9 +202,8 @@
                                 <label>内容:
                                     <textarea name="content" rows="3" required>${blog.content}</textarea>
                                 </label><br>
-                                <label>作者:
-                                    <input type="text" name="author" value="${blog.author || ''}">
-                                </label><br>
+                                <!-- 作者字段由后端自动处理，前端不需要编辑 -->
+                                <!-- label>作者: <input type="text" name="author" value="${blog.author || ''}"></label><br> -->
                                 <button type="submit">更新博客</button>
                                 <button type="button" onclick="hideUpdateForm(${blog.id})">取消</button>
                             </form>
@@ -216,13 +222,12 @@
             const form = e.target;
             const formData = new FormData(form);
             const blogData = {
-                id: Number(formData.get("id")),
                 title: formData.get("title"),
                 content: formData.get("content"),
-                author: formData.get("author")
+                is_public: formData.get("is_public") === "on"
             };
             try {
-                const response = await authFetch("/blogs/", {
+                const response = await authFetch(apiBase + "/", {
                     method: "POST",
                     body: JSON.stringify(blogData)
                 });
@@ -243,7 +248,7 @@
         async function deleteBlog(id) {
             if (!confirm("确定删除这个博客吗？")) return;
             try {
-                const response = await authFetch(`/blogs/${id}`, {
+                const response = await authFetch(apiBase + `/${id}`, {
                     method: "DELETE"
                 });
                 if (response.ok) {
@@ -274,18 +279,16 @@
             const form = event.target;
             const formData = new FormData(form);
             const blogData = {
-                id: id,
                 title: formData.get("title"),
-                content: formData.get("content"),
-                author: formData.get("author")
+                content: formData.get("content")
             };
             try {
-                const response = await fetch(apiBase + "/" + id, {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(blogData)
+                const response = await authFetch(apiBase + `/${id}`, {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(blogData)
                 });
                 if (response.ok) {
                     hideUpdateForm(id);
@@ -300,8 +303,62 @@
             return false;
         }
         
-        // 初始加载博客列表
-        loadBlogs();
+        // 点赞博客
+        async function likeBlog(id) {
+            try {
+                const res = await authFetch(`${apiBase}/${id}/like`, { method: 'POST' });
+                const data = await res.json();
+                document.getElementById(`like-count-${id}`).innerText = data.likes;
+            } catch (err) {
+                console.error('点赞失败', err);
+            }
+        }
+
+        // 加载评论列表
+        async function loadComments(id) {
+            try {
+                const res = await authFetch(`${apiBase}/${id}/comments`);
+                const comments = await res.json();
+                const container = document.getElementById(`comments-${id}`);
+                container.innerHTML = '';
+                comments.forEach(c => {
+                    const p = document.createElement('p');
+                    p.textContent = `${c.author} ${new Date(c.created_at).toLocaleString()}: ${c.content}`;
+                    container.appendChild(p);
+                });
+            } catch (err) {
+                console.error('加载评论失败', err);
+            }
+        }
+
+        // 提交评论
+        async function submitComment(id) {
+            const input = document.getElementById(`comment-input-${id}`);
+            const content = input.value.trim();
+            if (!content) return;
+            try {
+                const res = await authFetch(`${apiBase}/${id}/comments`, {
+                    method: 'POST',
+                    body: JSON.stringify({ content })
+                });
+                if (res.ok) {
+                    input.value = '';
+                    loadComments(id);
+                } else {
+                    console.error('评论失败', await res.text());
+                }
+            } catch (err) {
+                console.error('提交评论失败', err);
+            }
+        }
+
+        // 初始加载博客列表及评论
+        async function init() {
+            await loadBlogs();
+            const blogs = await authFetch(apiBase + "/").then(r => r.json());
+            blogs.forEach(b => loadComments(b.id));
+        }
+        init();
     </script>
 </body>
 </html>

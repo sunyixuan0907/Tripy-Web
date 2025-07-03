@@ -28,6 +28,16 @@ function updateAuthState() {
   if (adminLink) {
     adminLink.style.display = adminToken ? "block" : "none";    // ← 基于 admin_token
   }
+  // 控制个人中心链接显示
+  const profileLink = document.getElementById("profileLink");
+  if (profileLink) {
+    profileLink.style.display = token ? "block" : "none";
+  }
+  // 控制顶栏按钮可见性
+  const profileBtn = document.getElementById("profileBtn");
+  if (profileBtn) {
+    profileBtn.style.display = token ? "inline-block" : "none";
+  }
 }
 
 // 通用脚本：加载 header.html 并绑定下拉交互
