@@ -79,15 +79,16 @@ class MemoryBlogStore(BlogStore):
                 return
         raise Exception("Blog not found")
     
-    # 新增：点赞功能，每个用户只能点赞一次
+    # 新增：点赞/取消点赞功能，每个用户可切换点赞状态
     def like_blog(self, blog_id: int, username: str) -> int:
         blog = self.get_blog(blog_id)
         if not blog:
             raise Exception("Blog not found")
         users = self.like_map.get(blog_id)
         if username in users:
-            raise Exception("You have already liked this blog")
-        users.add(username)
+            users.remove(username)
+        else:
+            users.add(username)
         blog.likes = len(users)
         return blog.likes
     

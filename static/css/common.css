@@ -1,19 +1,82 @@
+/* 登录页字体白色 */
+.login-content, .login-content * {
+  color: #fff !important;
+}
+/* 注册界面字体黑色 */
+.register-content, .register-content *, .register-form, .register-form * {
+  color: #111 !important;
+}
 /* -------------------- Reset -------------------- */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  /* color: #111 !important; */
+  /* 全局字体蓝色描边 */
+  text-shadow:
+    1px 1px 0 #2196f3,
+    -1px 1px 0 #2196f3,
+    1px -1px 0 #2196f3,
+    -1px -1px 0 #2196f3,
+    0 1px 0 #2196f3,
+    1px 0 0 #2196f3,
+    0 -1px 0 #2196f3,
+    -1px 0 0 #2196f3;
 }
 
 /* -------------------- Body -------------------- */
 body {
   font-family: Arial, sans-serif;
-  background: #f5f5f5;
-  color: #333;
+  min-height: 100vh;
+  position: relative;
+  color: #fff;
   /* 留出顶栏空间 */
   padding-top: 56px;
   display: flex;
   flex-direction: column;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: url('/static/img/codm1.jpg') no-repeat center center fixed;
+/* 个人中心专用背景和字体色 */
+.profile-bg {
+  background: url('/static/img/蓝色纱窗.png') no-repeat center center fixed !important;
+  background-size: cover !important;
+}
+.profile-bg * {
+  color: #111 !important;
+}
+  background-size: cover;
+  z-index: -1;
+  opacity: 1;
+}
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: url('/static/img/codm1.jpg') no-repeat center center fixed;
+  background-size: cover;
+  z-index: -1;
+  opacity: 1;
+}
+
+/* 非主页页面背景图片 */
+body:not(.home-page)::before {
+  background: url('/static/img/back1.webp') no-repeat center center fixed !important;
+  background-size: cover !important;
+}
+}
 }
 
 /* 全局布局，确保 footer 在底部 */
@@ -33,7 +96,7 @@ html, body {
   justify-content: space-between;
   align-items: center;
   height: 56px;
-  background: #ff69b4;
+  background: transparent;
   color: #fff;
   padding: 0 20px;
   position: fixed;
@@ -117,10 +180,21 @@ html, body {
   font-size: 24px;
 }
 .main-content form {
-  background: #fff;
+  background: transparent;
   padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  border-radius: 0;
+  box-shadow: none;
+  color: #fff;
+}
+/* Dino Game 相关内容透明与白字 */
+#score, #gameOver, #leaderboard {
+  color: #fff !important;
+  background: transparent !important;
+}
+
+/* 博客创建栏字体白色（右侧栏） */
+.blog-create-bar, .blog-create-bar * {
+  color: #fff !important;
 }
 .main-content label {
   display: block;
@@ -171,10 +245,11 @@ html, body {
 .entry-title {
   font-size: 16px;
   margin-bottom: 8px;
+  color: #fff;
 }
 .entry-desc {
   font-size: 12px;
-  color: #555;
+  color: #fff;
 }
 
 /* -------------------- 通用布局 -------------------- */
@@ -182,11 +257,22 @@ html, body {
 .hidden { display: none; }
 
 /* 页面容器 */
+/* 主内容区加半透明背景提升可读性 */
+/* 主内容区透明背景 */
 .page-content {
   margin: 20px auto;
   padding: 40px;
   text-align: center;
   max-width: 800px;
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  color: #fff !important;
+}
+
+/* 博客创建栏字体白色 */
+.blog-create-bar, .blog-create-bar * {
+  color: #fff !important;
 }
 
 /* 内容包装器 */
@@ -195,10 +281,14 @@ html, body {
 }
 
 /* -------------------- 页脚 Footer -------------------- */
+/* 页脚透明背景 */
 .footer {
-  background: #f8f8f8;
+  background: transparent;
   padding: 20px 0;
   margin-top: 40px;
+  border-radius: 0;
+  box-shadow: none;
+  color: #fff;
 }
 .footer-container {
   display: flex;
@@ -212,7 +302,7 @@ html, body {
 .footer-section h3 {
   font-size: 16px;
   margin-bottom: 10px;
-  color: #333;
+  color: #fff;
 }
 .footer-section ul {
   list-style: none;
@@ -222,7 +312,7 @@ html, body {
   margin-bottom: 6px;
 }
 .footer-section ul li a {
-  color: #555;
+  color: #fff;
   text-decoration: none;
   transition: color 0.2s;
 }
