@@ -1,76 +1,51 @@
 import os
-from dotenv import load_dotenv
-import subprocess  # 新增：用于静默子进程输出
+import subprocess  # 用于静默子进程输出
 import logging
-import requests  # 用于获取已存在 ngrok 隧道
-from fastapi import FastAPI
-from contextlib import asynccontextmanager
-from pyngrok import ngrok, conf as pyngrok_conf
-from pyngrok.conf import PyngrokConfig  # pyngrok 配置类
-from subprocess import Popen as _Popen
+import requests  # 用于获取已存在隧道
+from dotenv import load_dotenv
+# 加载 .env 配置，override=True 确保 .env 变量每次覆盖
+load_dotenv(override=True)
 
-# 定义自定义 Popen，用于屏蔽 ngrok 进程所有输出
-class NgrokPopen(_Popen):
-    def __init__(self, *args, **kwargs):
-        kwargs.setdefault('stdout', subprocess.DEVNULL)
-        kwargs.setdefault('stderr', subprocess.DEVNULL)
-        super().__init__(*args, **kwargs)
+import asyncio
+try:
+    from asyncio import WindowsSelectorEventLoopPolicy
+    asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())
+except ImportError:
+    pass
+
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import RedirectResponse
+from contextlib import asynccontextmanager
+
+from app.core.config import NGROK_AUTH_TOKEN, TUNNEL_PORT, TUNNEL_MODE
+from app.core.tunnel import setup_tunnel
+from app.core.database import Base, engine
+
+from app.api import blog, auth, dino_game, admin, user
+from app.api.tunnel import router as tunnel_router  # localtunnel 代理
+from app.core.config import TUNNEL_MODE  # 隧道模式
 
 # 屏蔽 pyngrok 和二进制日志输出
 logging.getLogger("pyngrok").setLevel(logging.ERROR)
 logging.getLogger("pyngrok.ngrok").setLevel(logging.ERROR)
 
-def get_existing_tunnel_url(port: int):
-    """通过 ngrok 本地 API 获取已存在隧道的公网 URL"""
-    try:
-        resp = requests.get(f"http://127.0.0.1:4040/api/tunnels")
-        data = resp.json()
-        for t in data.get("tunnels", []):
-            if f"{port}" in t.get("config", {}).get("addr", ""):
-                return t.get("public_url")
-    except Exception:
-        return None
-    return None
+PUBLIC_URL: str = ""  # 存储隧道地址
 
-# 1. 启动前先删除数据库文件
-db_path = os.path.join(os.path.dirname(__file__), "app", "data.db")
-if os.path.exists(db_path):
-    os.remove(db_path)
-
-load_dotenv()  # 加载根目录 .env 文件中的配置
-from fastapi.middleware.cors import CORSMiddleware
-from app.api import blog, auth, dino_game, admin, user  # 导入用户管理路由
-from fastapi.staticfiles import StaticFiles
-from app.core.config import NGROK_AUTH_TOKEN, TUNNEL_PORT
-from app.core.database import Base, engine
-from fastapi.responses import RedirectResponse
-
+# Lifespan manager for tunnels
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    print("Debug: NGROK_AUTH_TOKEN:", repr(NGROK_AUTH_TOKEN))
-    # 尝试启动新 ngrok 隧道，若受限则获取现有隧道 URL
-    public_url = None
-    try:
-        ngrok.kill()  # 终止旧会话，可能无效则忽略
-    except:
-        pass
-    try:
-        if NGROK_AUTH_TOKEN:
-            ngrok.set_auth_token(NGROK_AUTH_TOKEN)
-        public_url = ngrok.connect(
-            TUNNEL_PORT,
-            pyngrok_config=PyngrokConfig(auth_token=NGROK_AUTH_TOKEN, web_addr=False, no_log=True, subprocess_kwargs={"stdout": subprocess.DEVNULL, "stderr": subprocess.DEVNULL})
-        ).public_url
-    except Exception:
-        # 當 ngrok session 限制时，尝试从本地 API 获取已存在隧道
-        public_url = get_existing_tunnel_url(TUNNEL_PORT)
+    public_url, _ = setup_tunnel(TUNNEL_PORT)
     if public_url:
-        print(f"🔗 Public URL: {public_url}")
-    else:
-        print("❌ 无法获取 ngrok 隧道 URL")
+        print(f"🔗 公网 URL: {public_url}")
     yield
 
-app = FastAPI(lifespan=lifespan)
+# 仅在启用隧道模式时使用 lifespan
+if TUNNEL_MODE.lower() in ("ngrok", "localtunnel", "lt"):
+    app = FastAPI(lifespan=lifespan)
+else:
+    app = FastAPI()
 
 app.mount("/static", StaticFiles(directory="static", html=True), name="static")
 
@@ -87,16 +62,30 @@ app.include_router(auth.router, prefix="/auth")
 app.include_router(dino_game.router, prefix="/dino")
 app.include_router(admin.router, prefix="/admin")
 app.include_router(user.router, prefix="/users")  # 注册用户管理路由
+if TUNNEL_MODE.lower() in ("localtunnel", "lt"):
+    app.include_router(tunnel_router, prefix="/tunnel", tags=["tunnel"])  # 代理 localtunnel 请求
 
 @app.get("/", include_in_schema=False)
 def root():
     # 根路由重定向到前端首页
     return RedirectResponse(url="/static/pages/index.html")
 
+# 删除旧数据库文件，确保表结构与模型同步（会清空所有数据）
+db_path = os.path.join(os.path.dirname(__file__), "app", "data.db")
+if os.path.exists(db_path):
+    os.remove(db_path)
+
 # 2. 再创建表
 Base.metadata.create_all(bind=engine)
 
 if __name__ == "__main__":
-    # 直接用 Python 运行时，自动使用同一端口启动服务
+    # 直接用 Python 运行时，自动启动隧道并启动服务
+    # 自动发起隧道
+    public_url, _ = setup_tunnel(TUNNEL_PORT)
+    if public_url:
+        print(f"🔗 公网 URL: {public_url}")
+    else:
+        print("❌ 未启用或无法获取隧道 URL")
+    # 启动 FastAPI 服务
     import uvicorn
     uvicorn.run(app, host="127.0.0.1", port=TUNNEL_PORT)

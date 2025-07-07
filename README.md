@@ -53,6 +53,21 @@ pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 pip install "fastapi[standard]" uvicorn python-jose sqlalchemy "passlib[bcrypt]"
 ```
 
+### 环境变量配置
+在运行服务前，可在根目录创建 `.env` 文件，配置如下：
+
+```properties
+# 服务端口
+TUNNEL_PORT=8000
+# 隧道模式，可选：
+#   不设置或空：不启用内网穿透
+#   ngrok：使用 ngrok 隧道（需安装 ngrok 并配置 NGROK_AUTH_TOKEN）
+#   localtunnel 或 lt：使用 localtunnel 隧道（需全局安装 localtunnel CLI：npm install -g localtunnel）
+TUNNEL_MODE=ngrok
+# ngrok 授权令牌（可选，ngrok 隧道）
+NGROK_AUTH_TOKEN=你的_ngrok_令牌
+```
+
 ### 启动服务
 打开终端，切换到项目根目录
 cd d:\pycode\Tripy-Web
