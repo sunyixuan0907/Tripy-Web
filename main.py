@@ -39,7 +39,7 @@ if os.path.exists(db_path):
 
 load_dotenv()  # 加载根目录 .env 文件中的配置
 from fastapi.middleware.cors import CORSMiddleware
-from app.api import blog, auth, dino_game, admin
+from app.api import blog, auth, dino_game, admin, user  # 导入用户管理路由
 from fastapi.staticfiles import StaticFiles
 from app.core.config import NGROK_AUTH_TOKEN, TUNNEL_PORT
 from app.core.database import Base, engine
@@ -86,6 +86,7 @@ app.include_router(blog.router, prefix="/blogs")
 app.include_router(auth.router, prefix="/auth")
 app.include_router(dino_game.router, prefix="/dino")
 app.include_router(admin.router, prefix="/admin")
+app.include_router(user.router, prefix="/users")  # 注册用户管理路由
 
 @app.get("/", include_in_schema=False)
 def root():

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>个人中心</title>
+  <link rel="stylesheet" href="/static/css/common.css">
+  <script src="/static/js/common.js"></script>
+</head>
+<body>
+  <div id="headerContainer"></div>
+  <div class="container" style="padding:20px;max-width:600px;margin:0 auto;">
+    <h1>个人中心</h1>
+    <form id="profileForm">
+      <div>
+        <label>用户名:</label>
+        <span id="username"></span>
+      </div>
+      <div style="margin-top:10px;">
+        <label for="nickname">昵称:</label>
+        <input type="text" id="nickname" name="nickname" required style="width:100%;padding:8px;">
+      </div>
+      <div style="margin-top:20px;">
+        <button type="submit" style="padding:10px 20px;">保存</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    // 获取并填写用户信息
+    async function loadProfile() {
+      try {
+        const res = await authFetch(window.location.origin + '/users/me');
+        const user = await res.json();
+        document.getElementById('username').textContent = user.username;
+        document.getElementById('nickname').value = user.nickname || '';
+      } catch (e) {
+        console.error('加载用户信息失败', e);
+      }
+    }
+
+    // 提交更新
+    document.getElementById('profileForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const nickname = document.getElementById('nickname').value;
+      try {
+        await authFetch(window.location.origin + '/users/me', {
+          method: 'PATCH',
+          body: JSON.stringify({ nickname })
+        });
+        alert('昵称已更新');
+        loadProfile();
+      } catch (e) {
+        console.error('更新失败', e);
+        alert('更新失败');
+      }
+    });
+
+    loadProfile();
+  </script>
+</body>
+</html>
