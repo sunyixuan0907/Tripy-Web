@@ -21,7 +21,15 @@ def update_current_user(
     db_user = db.query(User).filter(User.id == current_user.id).first()
     if not db_user:
         raise HTTPException(status_code=404, detail="用户不存在")
-    db_user.nickname = user_update.nickname
+    # 修改昵称
+    if user_update.nickname is not None:
+        db_user.nickname = user_update.nickname
+    # 修改密码
+    if user_update.old_password and user_update.new_password:
+        from app.db import pwd_ctx
+        if not pwd_ctx.verify(user_update.old_password, db_user.hashed_password):
+            raise HTTPException(status_code=400, detail="原密码错误")
+        db_user.hashed_password = pwd_ctx.hash(user_update.new_password)
     db.commit()
     db.refresh(db_user)
     return db_user

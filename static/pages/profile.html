@@ -8,7 +8,7 @@
 </head>
 <body>
   <div id="headerContainer"></div>
-  <div class="container" style="padding:20px;max-width:600px;margin:0 auto;">
+  <div class="container profile-bg" style="padding:20px;max-width:600px;margin:0 auto;">
     <h1>个人中心</h1>
     <form id="profileForm">
       <div>
@@ -18,6 +18,19 @@
       <div style="margin-top:10px;">
         <label for="nickname">昵称:</label>
         <input type="text" id="nickname" name="nickname" required style="width:100%;padding:8px;">
+      </div>
+      <hr style="margin:24px 0;">
+      <div>
+        <label for="old_password">原密码:</label>
+        <input type="password" id="old_password" name="old_password" style="width:100%;padding:8px;">
+      </div>
+      <div style="margin-top:10px;">
+        <label for="new_password">新密码:</label>
+        <input type="password" id="new_password" name="new_password" style="width:100%;padding:8px;">
+      </div>
+      <div style="margin-top:10px;">
+        <label for="confirm_password">确认新密码:</label>
+        <input type="password" id="confirm_password" name="confirm_password" style="width:100%;padding:8px;">
       </div>
       <div style="margin-top:20px;">
         <button type="submit" style="padding:10px 20px;">保存</button>
@@ -42,13 +55,34 @@
     document.getElementById('profileForm').addEventListener('submit', async e => {
       e.preventDefault();
       const nickname = document.getElementById('nickname').value;
+      const old_password = document.getElementById('old_password').value;
+      const new_password = document.getElementById('new_password').value;
+      const confirm_password = document.getElementById('confirm_password').value;
+      const payload = { nickname };
+      if (old_password || new_password || confirm_password) {
+        if (!old_password || !new_password || !confirm_password) {
+          alert('请完整填写原密码、新密码和确认新密码');
+          return;
+        }
+        if (new_password !== confirm_password) {
+          alert('两次输入的新密码不一致');
+          return;
+        }
+        payload.old_password = old_password;
+        payload.new_password = new_password;
+      }
       try {
         await authFetch(window.location.origin + '/users/me', {
           method: 'PATCH',
-          body: JSON.stringify({ nickname })
+          body: JSON.stringify(payload)
         });
-        alert('昵称已更新');
-        loadProfile();
+        if (old_password && new_password) {
+          alert('密码修改成功，请使用新密码重新登录');
+          logout();
+        } else {
+          alert('昵称已更新');
+          loadProfile();
+        }
       } catch (e) {
         console.error('更新失败', e);
         alert('更新失败');
