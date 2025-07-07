@@ -90,11 +90,11 @@
       h: 40 * SCALE,
       y: 0, vy: 0,
       gravity: 0.6 * SCALE,
-      jumpForce: 12 * SCALE,
+      jumpForce: 24 * SCALE,
       grounded: false,
       baseY: 0
     };
-    let obstacles = [], frame=0, score=0, speed=6*SCALE, spawnTimer=0, gameActive=true;
+    let obstacles = [], frame=0, score=0, speed=1.5*SCALE, spawnTimer=0, gameActive=true;
 
     function resizeCanvas(){
       // 减去 header 高度
@@ -117,7 +117,7 @@
     resizeCanvas();
 
     function resetGame(){
-      obstacles=[]; frame=0; score=0; speed=6*SCALE; spawnTimer=0; gameActive=true;
+      obstacles=[]; frame=0; score=0; speed=1.5*SCALE; spawnTimer=0; gameActive=true;
       dino.vy=0; dino.grounded=true; dino.y=dino.baseY;
       overEl.style.display='none';
       requestAnimationFrame(update);
@@ -164,7 +164,7 @@
           gameActive=false; overEl.style.display='block'; postScoreAndShow();
         }
         if (!o.passed && o.x+o.w < dino.x) {
-          o.passed=true; score++; speed+=0.2*SCALE;
+          o.passed=true; score++; speed+=0.1*SCALE;
         }
       });
 
