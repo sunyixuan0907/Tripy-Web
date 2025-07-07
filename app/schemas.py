@@ -21,7 +21,9 @@ class UserOut(BaseModel):
 
 # 新增：用户更新模型
 class UserUpdate(BaseModel):
-    nickname: str
+    nickname: str | None = None
+    old_password: str | None = None
+    new_password: str | None = None
 
 class BlogCreate(BaseModel):
     title: str

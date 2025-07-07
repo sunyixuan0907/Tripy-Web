@@ -35,7 +35,7 @@
       flex: 0 0 22vw;
       max-width: 350px;
       min-width: 220px;
-      background: #f8f8f8;
+      background: transparent !important;
       border-right: 1px solid #e0e0e0;
       padding: 32px 18px 32px 18px;
       box-sizing: border-box;
@@ -59,7 +59,7 @@
       flex: 1 1 38vw;
       min-width: 320px;
       max-width: 700px;
-      background: #f8f8f8;
+      background: transparent !important;
       border-left: 1px solid #e0e0e0;
       padding: 32px 18px 32px 18px;
       box-sizing: border-box;
@@ -180,7 +180,7 @@
                         <strong>标题:</strong> ${blog.title}<br>
                         <strong>内容:</strong> ${blog.content}<br>
                         <strong>作者:</strong> ${blog.author || ""}<br>
-                        <strong>👍 喜欢:</strong> <span id="like-count-${blog.id}">${blog.likes}</span> <button onclick="likeBlog(${blog.id})">点赞</button><br>
+                        <strong>👍 喜欢:</strong> <span id="like-count-${blog.id}">${blog.likes}</span> <button id="like-btn-${blog.id}" onclick="likeBlog(${blog.id})">点赞</button><br>
                         <div class="blog-actions">
                             <button onclick="deleteBlog(${blog.id})">删除</button>
                             <button onclick="showUpdateForm(${blog.id})">编辑</button>
@@ -309,6 +309,15 @@
                 const res = await authFetch(`${apiBase}/${id}/like`, { method: 'POST' });
                 const data = await res.json();
                 document.getElementById(`like-count-${id}`).innerText = data.likes;
+                // 按钮状态切换
+                const btn = document.getElementById(`like-btn-${id}`);
+                if (btn) {
+                    if (btn.textContent === '点赞') {
+                        btn.textContent = '取消点赞';
+                    } else {
+                        btn.textContent = '点赞';
+                    }
+                }
             } catch (err) {
                 console.error('点赞失败', err);
             }
